@@ -48,7 +48,7 @@ void presentation()
 	auto loader = new MapLoader();
 	//	while (true)
 	//	{
-	auto map = loader->load("test.txt");
+	auto map = loader->load("att48.txt");
 	if (map != nullptr)
 	{
 		auto dp = new TspApx(map);

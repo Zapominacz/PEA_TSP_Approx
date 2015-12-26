@@ -145,7 +145,10 @@ void TspApx::removeVisitedVertexes() const
 {
 	const auto size = baseMap->size;
 	auto visited = new bool[size];
-	memset(visited, false, size * sizeof(bool));
+	for (auto v = 0; v < size; v++)
+	{
+		visited[v] = false;
+	}
 	unsigned solutionIndex = 1;
 	visited[*eulerianCircuit->begin()] = true;
 	solution->order[0] = *eulerianCircuit->begin();
@@ -158,6 +161,7 @@ void TspApx::removeVisitedVertexes() const
 			solution->cost +=
 				baseMap->matrix[solution->order[solutionIndex - 1]]
 				[vertex];
+			visited[vertex] = true;
 			++solutionIndex;
 		}
 	}

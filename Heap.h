@@ -5,19 +5,16 @@
 class Heap
 {
 private:
-	struct minHeap
-	{
-		bool operator()(const pair<float, unsigned>& lhs, const pair<float, unsigned>& rhs) const {
-			return lhs.first > rhs.first;
-		}
-	};
+	static bool cmp(const pair<float, unsigned>& lhs, const pair<float, unsigned>& rhs) {
+		return lhs.first > rhs.first;
+	}
 	vector<pair<float, unsigned>>* values;
 public:
 
 	Heap()
 	{
 		values = new vector<pair<float, unsigned>>();
-		make_heap(values->begin(), values->end(), minHeap());
+		make_heap(values->begin(), values->end(), cmp);
 	}
 
 	~Heap(void)
@@ -28,7 +25,7 @@ public:
 	void push(float key, unsigned value) const
 	{
 		values->push_back({ key, value });
-		push_heap(values->begin(), values->end(), minHeap());
+		push_heap(values->begin(), values->end(), cmp);
 	}
 
 	bool isEmpty() const
@@ -38,9 +35,9 @@ public:
 
 	unsigned pop() const
 	{
-		auto result = values->front().second;
+		pop_heap(values->begin(), values->end(), cmp);
+		auto result = values->back().second;
 		values->pop_back();
-		pop_heap(values->begin(), values->end(), minHeap());
 		return result;
 	}
 
@@ -65,10 +62,10 @@ public:
 			if (it->second == value)
 			{
 				it->first = key;
-				return;
+				break;
 			}
 		}
-		make_heap(values->begin(), values->end(), minHeap());
+		make_heap(values->begin(), values->end(), cmp);
 	}
 };
 
