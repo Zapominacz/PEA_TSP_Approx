@@ -6,6 +6,7 @@
 #include "AdjacencyMap.h"
 
 using namespace std;
+
 class TspApx
 {
 private:
@@ -24,3 +25,4 @@ public:
 	~TspApx(void);
 	Solution* solve() const;
 };
+

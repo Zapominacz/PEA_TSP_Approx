@@ -9,18 +9,18 @@ void MapGenerator::cleanUp()
 		delete lastGenerated;
 		lastGenerated = nullptr;
 	}
-	if(vertexPositions != nullptr)
+	if (vertexPositions != nullptr)
 	{
 		delete vertexPositions;
 		vertexPositions = nullptr;
 	}
 }
 
-bool MapGenerator::isUniquePosition(Point* point, unsigned size)
+bool MapGenerator::isUniquePosition(Point* point, unsigned size) const
 {
 	for (unsigned i = 0; i < size; ++i)
 	{
-		if(abs(vertexPositions[i].x - point->x) < DELTA && abs(vertexPositions[i].y - point->y) < DELTA)
+		if (abs(vertexPositions[i].x - point->x) < Map::DELTA() && abs(vertexPositions[i].y - point->y) < Map::DELTA())
 		{
 			return false;
 		}
@@ -32,26 +32,29 @@ void MapGenerator::computePositions(unsigned size)
 {
 	using namespace std;
 	default_random_engine generator;
-	float maxPos = MAX_SIZE / sqrt(2); // odleg³oœæ nie przekroczy MAX_SIZE
+	float maxPos = MAX_SIZE / sqrt(2.0f); // odleg³oœæ nie przekroczy MAX_SIZE
 	uniform_real_distribution<float> distribution(0, maxPos);
 	vertexPositions = new Point[size];
 	for (unsigned vertex = 0; vertex < size; vertex++)
 	{
 		Point* point = &vertexPositions[vertex];
-		do {
+		do
+		{
 			point->x = distribution(generator);
 			point->y = distribution(generator);
-		} while (isUniquePosition(point, size));
+		}
+		while (isUniquePosition(point, size));
 	}
 }
 
-void MapGenerator::computeLengths(unsigned size)
+void MapGenerator::computeLengths(unsigned size) const
 {
 	for (unsigned row = 0; row < size; ++row)
 	{
 		for (unsigned col = 0; col < size; ++col)
 		{
-			if (row != col) {
+			if (row != col)
+			{
 				lastGenerated->matrix[row][col] = distance(vertexPositions + row, vertexPositions + col);
 			}
 		}
@@ -84,7 +87,8 @@ Map* MapGenerator::generate(unsigned size)
 	return lastGenerated;
 }
 
-Map* MapGenerator::getLastGenerated()
+Map* MapGenerator::getLastGenerated() const
 {
 	return lastGenerated;
 }
+

@@ -5,7 +5,7 @@
 
 void MapLoader::cleanUp()
 {
-	if(lastLoaded != nullptr)
+	if (lastLoaded != nullptr)
 	{
 		delete lastLoaded;
 		lastLoaded = nullptr;
@@ -25,10 +25,15 @@ MapLoader::~MapLoader()
 Map* MapLoader::load()
 {
 	using namespace std;
-
 	char path[240];
 	cout << "Podaj sciezke:" << endl;
 	cin >> path;
+	return load(path);
+}
+
+Map* MapLoader::load(char* path)
+{
+	using namespace std;
 	ifstream file;
 	file.open(path);
 
@@ -44,7 +49,7 @@ Map* MapLoader::load()
 			{
 				float weight = -1;
 				file >> weight;
-				if(weight >= 0)
+				if (weight >= 0)
 				{
 					lastLoaded->matrix[row][col] = weight;
 				}
@@ -56,7 +61,8 @@ Map* MapLoader::load()
 	return lastLoaded;
 }
 
-Map* MapLoader::getLastLoaded()
+Map* MapLoader::getLastLoaded() const
 {
 	return lastLoaded;
 }
+

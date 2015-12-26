@@ -19,18 +19,11 @@ public:
 
 	~Solution()
 	{
-		if(order != nullptr)
+		if (order != nullptr)
 		{
 			delete order;
 			order = nullptr;
 		}
 	}
-
-	friend std::ostream& operator<< (std::ostream & out, Solution const& data) {
-		for (auto i = 0; i < data.size; ++i) {
-			out << data.order[data.size] << " ";
-		}
-		out << "\nWaga: " << data.cost << std::endl;
-		return out;
-	}
 };
+

@@ -1,5 +1,6 @@
 #pragma once
 #include "Map.h"
+
 /*
 Miko³aj Styœ, 209773
 £aduje z pliku instancje problemu
@@ -13,5 +14,7 @@ public:
 	MapLoader(void);
 	~MapLoader(void);
 	Map* load();
-	Map* getLastLoaded();
+	Map* load(char *path);
+	Map* getLastLoaded() const;
 };
+

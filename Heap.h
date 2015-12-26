@@ -1,66 +1,74 @@
 #pragma once
-#include <unordered_map>
+#include <queue>
+#include <vector>
 
 class Heap
 {
 private:
-	vector<float>* keys;
-	unordered_map<float, unsigned>* values;
-
 	struct minHeap
 	{
-		bool operator()(const float& a, const float& b) const {
-			return a > b;
+		bool operator()(const pair<float, unsigned>& lhs, const pair<float, unsigned>& rhs) const {
+			return lhs.first > rhs.first;
 		}
 	};
-
+	vector<pair<float, unsigned>>* values;
 public:
+
 	Heap()
 	{
-		keys = new vector<float>();
-		values = new unordered_map<float, unsigned>();
-	}
-	void push(float key, unsigned value)
-	{
-		keys->push_back(key);
-		push_heap(keys->begin(), keys->end(), minHeap());
-		values->insert({ key, value });
-	}
-	bool isEmpty() const
-	{
-		return keys->empty();
+		values = new vector<pair<float, unsigned>>();
+		make_heap(values->begin(), values->end(), minHeap());
 	}
 
+	~Heap(void)
+	{
+		delete values;
+	}
+
+	void push(float key, unsigned value) const
+	{
+		values->push_back({ key, value });
+		push_heap(values->begin(), values->end(), minHeap());
+	}
+
+	bool isEmpty() const
+	{
+		return values->empty();
+	}
 
 	unsigned pop() const
 	{
-		auto firstKey = *keys->begin();
-		auto result = values->at(firstKey);
-		values->erase(firstKey);
-		keys->erase(keys->begin());
-		pop_heap(keys->begin(), keys->end(), minHeap());
+		auto result = values->front().second;
+		values->pop_back();
+		pop_heap(values->begin(), values->end(), minHeap());
 		return result;
 	}
 
 	float getKey(unsigned value) const
 	{
+		float result = FP_NAN;
 		for (auto it = values->begin(); it != values->end(); ++it)
 		{
-			if (it->second == value)
+			if(it->second == value)
 			{
-				return it->first;
+				result = it->first;
+				break;
 			}
 		}
-		return FP_NAN;
+		return result;
 	}
 
 	void setKey(float key, unsigned value) const
 	{
-		auto oldKey = getKey(value);
-		auto it = values->find(oldKey);
-		if (it != values->end()) {
-			it->second = key;
+		for (auto it = values->begin(); it != values->end(); ++it)
+		{
+			if (it->second == value)
+			{
+				it->first = key;
+				return;
+			}
 		}
-		make_heap(keys->begin(), keys->end(), minHeap());
+		make_heap(values->begin(), values->end(), minHeap());
 	}
 };
+

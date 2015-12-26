@@ -1,63 +1,47 @@
 #pragma once
-#include "Map.h";
+#include "Map.h"
 #include <vector>
 
 using namespace std;
+
 class AdjacencyMap
 {
 private:
-	vector<unsigned>** lists;
+	vector<unsigned>* lists;
 	unsigned size;
 public:
 
 	vector<unsigned>* getFor(int vertex) const
 	{
-		return lists[vertex];
-	}
-
-	AdjacencyMap(Map* map)
-	{
-		size = map->size;
-		lists = new vector<unsigned>*[size];
-		for (unsigned v1 = 0; v1 < size; ++v1)
-		{
-			lists[v1] = new vector<unsigned>;
-			for (unsigned v2 = 0; v2 < size; ++v2)
-			{
-				if(map->matrix[v1][v2] != INF)
-				{
-					lists[v1]->push_back(v2);
-				}
-			}
-		}
+		return &lists[vertex];
 	}
 
 	~AdjacencyMap(void)
 	{
-		if(lists != nullptr) {
-			for (unsigned vertex = 0; vertex < size; ++vertex)
-			{
-				delete lists[vertex];
-			}
+		if (lists != nullptr)
+		{
 			delete[] lists;
 			lists = nullptr;
 		}
 	}
 
-	void addSymmetric(unsigned v1, unsigned v2) const
+	AdjacencyMap(unsigned size)
 	{
-		getFor(v1)->push_back(v2);
-		getFor(v2)->push_back(v1);
+		this->size = size;
+		lists = new vector<unsigned>[size];
 	}
 
-	AdjacencyMap(AdjacencyMap* const map)
+
+	void addSymmetric(unsigned v1, unsigned v2) const
 	{
-		size = map->size;
-		lists = new vector<unsigned>*[size];
-		for (unsigned vertex = 0; vertex < size; ++vertex)
-		{
-			lists[vertex] = new vector<unsigned>;
-			lists[vertex] = map->lists[vertex];
-		}
+		lists[v1].push_back(v2);
+		lists[v2].push_back(v1);
+	}
+
+	void removeSymmetric(unsigned v1, unsigned v2) const
+	{
+		lists[v1].erase(find(lists[v1].begin(), lists[v1].end(), v2));
+		lists[v2].erase(find(lists[v2].begin(), lists[v2].end(), v1));
 	}
 };
+

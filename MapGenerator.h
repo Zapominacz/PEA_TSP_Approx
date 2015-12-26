@@ -14,13 +14,14 @@ private:
 	Point* vertexPositions;
 	const unsigned MAX_SIZE = 100;
 	void cleanUp();
-	bool isUniquePosition(Point* point, unsigned size);
+	bool isUniquePosition(Point* point, unsigned size) const;
 	void computePositions(unsigned size);
-	void computeLengths(unsigned size);
+	void computeLengths(unsigned size) const;
 	float distance(Point* point1, Point* point2) const;
 public:
 	MapGenerator(void);
 	~MapGenerator(void);
 	Map* generate(unsigned size);
-	Map* getLastGenerated();
+	Map* getLastGenerated() const;
 };
+
