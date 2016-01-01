@@ -2,40 +2,47 @@
 
 #include <iostream>
 #include <fstream>
+#include <ctime>
 #include "MapGenerator.h"
 #include "TspApx.h"
-#include <ctime>
+#include "TspDp.h"
 #include "Solution.h"
 #include "MapLoader.h"
 
-const bool TEST = false;
+using namespace std;
+const unsigned repeats = 100;
 
 void test()
 {
-	using namespace std;
 	auto generator = new MapGenerator();
-	unsigned sizes[] = {4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
-	unsigned sizesLenght = 17;
-	unsigned repeats = 100;
 	ofstream file;
-	file.open("results.txt", ios_base::app);
-	for (unsigned size = 0; size < sizesLenght; size++)
+	file.open("result1.txt", ios_base::app);
+	for (unsigned size = 4; size < 22; ++size)
 	{
-		double average = 0;
-		for (unsigned repeat = 0; repeat < repeats; repeat++)
+		double averageDp = 0;
+		double averageApx = 0;
+		double averageOpt = 0;
+		for (unsigned repeat = 0; repeat < repeats; ++repeat)
 		{
-			auto map = generator->generate(sizes[size]);
-			auto dp = new TspApx(map);
+			auto map = generator->generate(size);
+			auto apx = new TspApx(map);
+			auto dp = new TspDp(map);
 			auto begin = clock();
 			auto result = dp->solve();
 			auto end = clock();
-			cout << "Suma: " << result->cost << endl;
-			auto elapsed_secs = double(end - begin);
-			average += elapsed_secs;
+			cout << "DP " << result->cost << " ";
+			averageDp += (double(end - begin) * double(1000.0 / CLOCKS_PER_SEC)) / double(repeats);
+			begin = clock();
+			auto result2 = apx->solve();
+			end = clock();
+			cout << "APX " << result2->cost << " ";
+			averageApx += (double(end - begin) * double(1000.0 / CLOCKS_PER_SEC)) / double(repeats);
+			averageOpt += (result2->cost / result->cost) / static_cast<double>(repeats);
 			delete dp;
+			delete apx;
 		}
-		average /= sizesLenght;
-		file << sizes[size] << '\t' << average << endl;
+		cout << "Zakoñczono " << size << endl;
+		file << size << '\t' << averageDp << '\t' << averageApx << '\t' << averageOpt << endl;
 	}
 	file.close();
 	delete generator;
@@ -44,37 +51,31 @@ void test()
 void presentation()
 {
 	using namespace std;
-	//cout << "ATSP Dynamicznie" << endl;
 	auto loader = new MapLoader();
-	//	while (true)
-	//	{
-	auto map = loader->load("att48.txt");
-	if (map != nullptr)
+	char c = 0;
+	while (c != 'q')
 	{
-		auto dp = new TspApx(map);
-		auto result = dp->solve();
-		for (unsigned i = 0; i < result->size; ++i)
+		auto map = loader->load();
+		if (map != nullptr)
 		{
-			cout << result->order[i] << " ";
+			auto dp = new TspApx(map);
+			auto result = dp->solve();
+			for (unsigned i = 0; i < result->size; ++i)
+			{
+				cout << result->order[i] << " ";
+			}
+			cout << "\nWaga: " << result->cost << endl;
+			delete dp;
 		}
-		cout << "\nWaga: " << result->cost << endl;
-		delete dp;
+		c = cin.get();
 	}
-	cin.get();
-	//	}
 	delete loader;
 }
 
 int main(void)
 {
-	if (TEST)
-	{
-		test();
-	}
-	else
-	{
-		presentation();
-	}
+	test();
+	//presentation();
 	return 0;
 }
 

@@ -8,10 +8,6 @@ public:
 	unsigned* order;
 	unsigned size;
 
-	Solution(): Solution(0)
-	{
-	}
-
 	Solution(unsigned size): cost(0), size(size)
 	{
 		order = new unsigned[size];

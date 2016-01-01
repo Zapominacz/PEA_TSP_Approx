@@ -29,7 +29,7 @@ TspApx::~TspApx(void)
 Solution* TspApx::solve() const
 {
 	createPrimsMst();
-	greedyPerfectMatching();
+	//greedyPerfectMatching();
 	findEulerianCycle();
 	removeVisitedVertexes();
 	return solution;
@@ -41,8 +41,7 @@ void TspApx::createPrimsMst() const
 	auto heap = Heap();
 	auto included = new bool[size];
 	auto parent = new unsigned[size];
-	auto cost = new float[size];
-	parent[0] = Map::NO_VERTEX();
+	parent[0] = 0;
 	heap.push(0, 0);
 	for (unsigned vertex = 1; vertex < size; vertex++)
 	{
@@ -56,12 +55,14 @@ void TspApx::createPrimsMst() const
 		included[v1] = true;
 		for (unsigned v2 = 0; v2 < size; ++v2)
 		{
+			if (v2 == v1) {
+				continue;
+			}
 			auto weight = baseMap->matrix[v1][v2];
 			if (!included[v2] && weight < heap.getKey(v2))
 			{
 				heap.setKey(weight, v2);
 				parent[v2] = v1;
-				cost[v2] = weight;
 			}
 		}
 	}
@@ -74,7 +75,6 @@ void TspApx::createPrimsMst() const
 		}
 	}
 	delete[] included;
-	delete[] cost;
 	delete[] parent;
 };
 
@@ -132,9 +132,9 @@ void TspApx::findEulerianCycle() const
 		else
 		{
 			vertexStack->push(currentVertex);
-			auto neighbour = adjacencyMap->getFor(currentVertex)->back();
-			adjacencyMap->removeSymmetric(neighbour, currentVertex);
-			currentVertex = neighbour;
+			auto vertexAdjacencyList = adjacencyMap->getFor(currentVertex);
+			currentVertex = vertexAdjacencyList->back();
+			vertexAdjacencyList->pop_back();
 		}
 	}
 	delete vertexStack;
@@ -144,28 +144,28 @@ void TspApx::findEulerianCycle() const
 void TspApx::removeVisitedVertexes() const
 {
 	const auto size = baseMap->size;
-	auto visited = new bool[size];
+	auto visited = new bool[size]; //czy wierzchołek był odwiedzony
 	for (auto v = 0; v < size; v++)
 	{
 		visited[v] = false;
 	}
-	unsigned solutionIndex = 1;
+	unsigned solutionIndex = 1; //indeks wierzchołka w trasie
 	visited[*eulerianCircuit->begin()] = true;
-	solution->order[0] = *eulerianCircuit->begin();
+	solution->order[0] = *eulerianCircuit->begin(); //pierwszy jest zawsze wierzchołek 0
 	for (auto it = eulerianCircuit->begin() + 1; it != eulerianCircuit->end(); ++it)
 	{
 		auto vertex = *it;
-		if (!visited[vertex])
+		if (!visited[vertex]) //jeśli nie odwiedzony, dodaj do rozwiązania
 		{
 			solution->order[solutionIndex] = vertex;
-			solution->cost +=
+			solution->cost += //oblicz koszt drogi
 				baseMap->matrix[solution->order[solutionIndex - 1]]
 				[vertex];
 			visited[vertex] = true;
 			++solutionIndex;
 		}
 	}
-	solution->cost += baseMap->matrix[solution->order[solution->size - 1]][0];
+	solution->cost += baseMap->matrix[solution->order[solution->size - 1]][0]; //utwórz końcowy cykl
 	delete visited;
 }
 

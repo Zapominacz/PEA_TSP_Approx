@@ -39,6 +39,12 @@
     <ClInclude Include="AdjacencyMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TspDp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SolutionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MapGenerator.cpp">
@@ -51,6 +57,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TspApx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TspDp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

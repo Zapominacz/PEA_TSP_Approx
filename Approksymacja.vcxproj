@@ -153,13 +153,16 @@
     <ClInclude Include="MapLoader.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Solution.h" />
+    <ClInclude Include="SolutionSet.h" />
     <ClInclude Include="TspApx.h" />
+    <ClInclude Include="TspDp.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Approx.cpp" />
     <ClCompile Include="MapGenerator.cpp" />
     <ClCompile Include="MapLoader.cpp" />
     <ClCompile Include="TspApx.cpp" />
+    <ClCompile Include="TspDp.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
